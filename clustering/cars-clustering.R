@@ -1,3 +1,5 @@
+#ref: https://www.stat.berkeley.edu/~spector/s133/Clus.html
+
 cars = read.delim('cars.tab',stringsAsFactors=FALSE)
 head(cars)
 
