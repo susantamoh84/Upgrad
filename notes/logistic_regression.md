@@ -47,7 +47,6 @@
     - True Positives (TP) are actual positives, correctly predicted as positives
     - False Positives (FP) are actual negatives, incorrectly predicted as positives
     -  | Actual      | Predicted
-    -  --------------------------------------------------
     -  |             |   No           |     Yes         |
     -  | No          | TRUE Negative  | FALSE Positives |      
     -  | Yes         | FALSE Negative | TRUE Positives  |
