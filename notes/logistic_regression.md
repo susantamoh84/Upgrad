@@ -105,4 +105,18 @@
       - If not then coarse binning - merging buckets takes places till it becomes monotonic
       - IV = WOE * ( % of Good in bucket - % bad in bucket )
         - Predictive power of the model
-      - 
+      
+# Industrial Demo - Model Evaluation
+
+  - ROC Curve = % of Bad (x) vs % of Good (y)
+  - Gini = Area Under the ROC Curve 
+  - Validations
+    - IN-sample validation : Train & Test data
+    - Out-of-time validations
+    - K-fold cross validations
+  - Obviously, a good model will be stable. A model is considered stable if it has:
+    - Performance Stability: Results of in-sample validation approximately match those of out-of-time validation
+    - Variable Stability: The sample used for model building hasn't changed too much and has the same general characteristics
+  - Tracking Performance Overtime
+    - Recalibration - first time performance drops ---> recalibration minor correction
+    - Rebuilding - after first time the performance drops
