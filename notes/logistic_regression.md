@@ -62,6 +62,47 @@
     -                     = 1 - True Positive Rate
     - Accuracy = (TP+FN)/(TN+FP+FN+TP)
     
+    - Based on the cut-off the accuracy, sensitivity, specificity values fluctuate 
+      - There is a single optimum cut-off point where all the above 3 values obtain maximum value without sacrificing the value of the other 2
+  
+    - Discriminative Power of a model - accuracy, sensitivity, specificity
+    
   - Gain and Lift
+    - Lift = Gain from current model / Gain from random model
+    - Gain
+      - Divide the data into 10 deciles sorting by their probabilities ( desc )
+      - In each decile find the following
+        - Cumulative total responses
+        - Cumulative total positive responses
+        - Gain = Cumulative % of the total positive responses till now 
+        -      = Cumulative total positive responses upto that decile / Total positive responses
 
   - KS statistic 
+    - Similar tp Gain chart find the Cumulative % of the total negative responses till now
+    - Then find KS stats = Cum % positive - Cum % negative in each decile
+    - A good model is one for which the KS statistic:
+      - is equal to 40% or more
+      - lies in the top deciles, i.e. 1st, 2nd, 3rd or 4th
+
+# Logistic Regression - Industrial Demo
+
+  - there are major errors you should be on the lookout for while selecting a sample. These include: 
+    - Cyclical or seasonal fluctuations in the business that need to be taken care of while building the samples. E.g. Diwali sales, economic ups and downs, etc.
+    - The sample should be representative of the population on which the model will be applied in the future.
+    - For rare events samples, the sample should be balanced before it is used for modelling.
+    
+  - Segmentation:
+    - Can help build different models for different segments
+    - students vs salaried
+    
+  - Variable Transformations
+    - Dummary variables - makes model more stable ( compared to treating it as a numerical variable )
+      - disadvantage is data clumping - a lot of records having similar values
+    - Weight Of Evidence
+      - WOE = ln( Good in bucket/Total Good) - ln( Bad in bucket/Total Bad)
+      -     = ln( % Good in bucket / % Bad in the bucket )
+      - WOE has to be monotonic
+      - If not then coarse binning - merging buckets takes places till it becomes monotonic
+      - IV = WOE * ( % of Good in bucket - % bad in bucket )
+        - Predictive power of the model
+      - 
