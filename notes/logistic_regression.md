@@ -19,3 +19,39 @@
     - For sigmoid P = 1/(1+exp(-(b0+b1x)))
     -             Ln(P/(1-p))  = b0+b1x
     - Log of odds has linear relationship with x
+
+# Multi-variate Logistic Regression
+
+  - Recall that, for continuous variables, the scale command is used to standardise 
+  - What the scale command basically does is — it converts values to the z-scores.
+  - In glm if the coeeficients of variable is NA, those can be removed.
+    - Step wise variable selection: 
+      - stepAIC is used to find the relevant variables
+    - Backward variable selection:
+      - using VIF, p-values the variable selections can be performed
+    
+# Model Evaluation
+
+  - Model performance metrics:
+  - Accuracy
+    - Is measured the correct prediction % in the test data
+    - Confusion matrix = predicted vs actual yes/no
+
+  - Sensitivity and Specificity
+    - Sensitivity = Proportions of Yes values are correct
+    -             = Number of Yes's correctly predicted / Total Number of actual Yes's
+    - Specificity = Proportions of No values are correct
+    -             = Number of No's correctly predicted / Total Number of actual No's
+    - True Negatives (TN) are actual negatives, correctly predicted as negatives
+    - False Negatives (FN) are actual positives, incorrectly predicted as negatives
+    - True Positives (TP) are actual positives, correctly predicted as positives
+    - False Positives (FP) are actual negatives, incorrectly predicted as positives
+    - | Actual      | Predicted
+      --------------------------------------------------
+      |             |   No           |     Yes         |
+      | No          | TRUE Negative  | FALSE Positives |      
+      | Yes         | FALSE Negative | TRUE Positives  |
+      
+  - Gain and Lift
+
+  - KS statistic 
