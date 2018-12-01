@@ -38,10 +38,7 @@
     - Confusion matrix = predicted vs actual yes/no
 
   - Sensitivity and Specificity
-    - Sensitivity = Proportions of Yes values are correct
-    -             = Number of Yes's correctly predicted / Total Number of actual Yes's
-    - Specificity = Proportions of No values are correct
-    -             = Number of No's correctly predicted / Total Number of actual No's
+
     - True Negatives (TN) are actual negatives, correctly predicted as negatives
     - False Negatives (FN) are actual positives, incorrectly predicted as negatives
     - True Positives (TP) are actual positives, correctly predicted as positives
@@ -51,6 +48,20 @@
     -  | No          | TRUE Negative  | FALSE Positives |      
     -  | Yes         | FALSE Negative | TRUE Positives  |
       
+    - Sensitivity = Proportions of Yes values are correct
+    -             = Number of Yes's correctly predicted / Total Number of actual Yes's
+    - Sensitivity = True Positive Rate
+    -             = TP/(TP+FN)
+    - Specificity = Proportions of No values are correct
+    -             = Number of No's correctly predicted / Total Number of actual No's      
+    - Specificity = True Negative Rate
+    -             = TN/(TN+FP)
+    - False Positive Rate = FP/(FP+TN)
+    -                     = 1 - True Negative Rate
+    - False Negative Rate = FN/(TP+FN)
+    -                     = 1 - True Positive Rate
+    - Accuracy = (TP+FN)/(TN+FP+FN+TP)
+    
   - Gain and Lift
 
   - KS statistic 
