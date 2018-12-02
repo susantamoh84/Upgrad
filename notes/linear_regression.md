@@ -55,6 +55,7 @@
     - Colinearity between multiple independent variable makes it difficult of assess the effect of the individual predictors
     - A variable with a high VIF means it can be largely explained by other independent variables
     - Thus, you have to check and remove variables with a high VIF after checking for p-values
+    - It doesn't affect the Adjusted R-square of the model, only coeefficients are exaggerated or reduced.
     
   - Variable Selection Method
     - stepAIC
