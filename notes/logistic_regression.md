@@ -100,7 +100,7 @@
       - disadvantage is data clumping - a lot of records having similar values
     - Weight Of Evidence
       - WOE = ln( Good in bucket/Total Good) - ln( Bad in bucket/Total Bad)
-      -     = ln( % Good in bucket / % Bad in the bucket )
+      -     = ln( % Good in bucket - % Bad in the bucket )
       - WOE has to be monotonic
       - If not then coarse binning - merging buckets takes places till it becomes monotonic
       - IV = WOE * ( % of Good in bucket - % bad in bucket )
