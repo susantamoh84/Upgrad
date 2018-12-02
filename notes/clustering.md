@@ -60,6 +60,13 @@
         - Pseudo F statistic, which is given by (between-cluster-sum-of-squares / (c-1)) / (within-cluster-sum-of-squares / (n-c)) where c is the number of clusters and n is the total number of data points
         
 
+  - Useful commands:
+    - kmeans: 
+      - kmeans(cric, center = 4, iter.max = 50, nstart = 50) 
+      - Cricket <- cbind(Cricket, cric.km$cluster) 
+      - ggplot(Cricket, aes(x = SR, y = Ave, colour = as.factor(cric.km$cluster), label = Player)) + geom_point() + geom_text(size = 3)
+
+
 # Hierarchical clustering
   - Algorithim
     - Given a set of N items to be clustered, the steps in hierarchical clustering are:
@@ -78,3 +85,9 @@
     - Average Linkage: Here, the distance between 2 clusters is defined as the average distance between every point of one cluster to every other point of the other cluster.
 
   - Depending on how much clusters need to be kept, the dendogram can be cut a suitable height
+
+  - Useful commands:
+    - hierarchial clustering: 
+      - kmeans(cric, center = 4, iter.max = 50, nstart = 50) 
+      - Cricket <- cbind(Cricket, cric.km$cluster) 
+      - ggplot(Cricket, aes(x = SR, y = Ave, colour = as.factor(cric.km$cluster), label = Player)) + geom_point() + geom_text(size = 3)
