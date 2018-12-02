@@ -88,6 +88,6 @@
 
   - Useful commands:
     - hierarchial clustering: 
-      - kmeans(cric, center = 4, iter.max = 50, nstart = 50) 
-      - Cricket <- cbind(Cricket, cric.km$cluster) 
-      - ggplot(Cricket, aes(x = SR, y = Ave, colour = as.factor(cric.km$cluster), label = Player)) + geom_point() + geom_text(size = 3)
+      - hclust(RFM_dist, method="complete") 
+      - rect.hclust(RFM_hclust2, k=5, border="red") 
+      - clusterCut <- cutree(RFM_hclust2, k=5)
