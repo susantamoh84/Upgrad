@@ -88,6 +88,7 @@
 
   - Useful commands:
     - hierarchial clustering: 
+      - scale(x, center = TRUE, scale = TRUE)
       - hclust(RFM_dist, method="complete") 
       - rect.hclust(RFM_hclust2, k=5, border="red") 
       - clusterCut <- cutree(RFM_hclust2, k=5)
