@@ -22,10 +22,22 @@
 
   - Data Preparation:
   
-    - RFM analysis: In RFM analysis, you look at the recency, frequency and the monetary scores of all the customers for segmentation.
+    - RFM segmentation: In RFM analysis, you look at the recency, frequency and the monetary scores of all the customers for segmentation.
       - Recency: It measures how recently you visited the store or made a purchase
       - Frequency: It measures the frequency of the transactions the customers made
       - Monetary: It measures how much the customer spent on purchases he/she made
+        - Good amount of data is required atleast 1 years
+    - RPI segmentation
+      - Relationship - old / new customer
+      - Persona - buy certain kind of stuff: gift giver etc
+      - Intent - Based on your browsing pattern what is your intent at that particular time
+
+    - CDJ segmentation ( Customer Decsion Journey )
+      - Example; at different stages of customer journey the customer may decide to churn/leave
+      
+    - Segmentation Question always comes in the most structured fashion
+      - But segmentation is just answer to one of the possible question
+      - Unstructured question ------> Always go for segmentation
       
     - kmeans() function stores the output of the algorithm in a list of 9 objects.
       - cluster: This stores the cluster IDs for each data point
