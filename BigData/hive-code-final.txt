@@ -1,0 +1,231 @@
+
+-- IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND 
+ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+
+-- CREATE EXTERNAL TABLE 
+create external table if not exists amazon_reviews_table(reviewerid string, asin string,
+reviewername string, helpful array<int>, reviewtext string, overall double, summary string,
+unixreviewtime bigint) ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+with serdeproperties  ('paths' = '')
+location '/common_folder/amazon_reviews';
+
+-- RUN QUERY ON THIS TABLE 
+select reviewerid, reviewername, asin, unixreviewtime from amazon_reviews_table limit 10;
+
+
+-- FIND NUMBER OF REVIEWERS 
+select count(*) as review_count, count(distinct reviewerid) as reviewer_count,
+count(distinct asin) as product_count, min(unixreviewtime) as min_time,
+max(unixreviewtime) as max_time
+from amazon_reviews_table;
+
+-- 	review_count	reviewer_count	product_count	min_time		max_time
+--	630466			177428			22950			959904000		1406073600
+ 
+
+-- AVERAGE NUMBER OF REVIEWS FOR EACH REVIEWER 
+select avg(review_count)
+from (
+	select reviewerid, count(*) as review_count
+	from amazon_reviews_table
+	group by reviewerid
+	)a ;
+
+-- 3.55
+	
+-- REVIEWS SORTED BY DATE 
+select year(from_unixtime(unixreviewtime)) as yr, count(*) as review_count
+from amazon_reviews_table
+group by year(from_unixtime(unixreviewtime));
+
+-- 2007	21569
+-- 2008	36965
+-- 2000	4
+-- 2009	39810
+-- 2001	1
+-- 2010	57119
+-- 2002	4
+-- 2011	97492
+-- 2003	3
+-- 2012	112809
+-- 2004	7
+-- 2013	178744
+-- 2005	185
+-- 2014	80689
+-- 2006	5065
+
+
+-- PARTITION THE DATA  
+-- IMPORTANT: BEFORE PARTITIONING ANY TABLE, MAKE SURE YOU RUN THESE COMMANDS 
+SET hive.exec.max.dynamic.partitions=100000;
+SET hive.exec.max.dynamic.partitions.pernode=100000;
+
+
+-- First drop the table 
+drop table amazon_reviews_year_month_partitioned;
+
+-- Then create external table 
+create external table if not exists amazon_reviews_year_month_partitioned
+(reviewerid string, asin string, reviewername string, helpful array<int>, reviewtext string,
+overall double, summary string, unixreviewtime bigint) partitioned by (yr int, mnth int)
+location '/user/hive/warehouse/give_your_partition_folder_name';
+
+
+-- Then insert the data in the table 
+insert overwrite table amazon_reviews_year_month_partitioned partition(yr, mnth)
+select reviewerid, asin, reviewername, helpful, reviewtext,
+overall, summary, unixreviewtime, year(from_unixtime(unixreviewtime)) as yr, month(from_unixtime(unixreviewtime)) as mnth
+from amazon_reviews_table;
+
+
+-- BUCKETING THE DATA  
+
+
+-- First drop the table 
+drop table amazon_reviews_year_month_partitioned_clustered;
+
+-- Then create external table 
+create external table if not exists amazon_reviews_year_month_partitioned_clustered
+(reviewerid string, asin string, reviewername string, helpful array<int>, reviewtext string,
+overall double, summary string, unixreviewtime bigint) partitioned by (yr int, mnth int)
+clustered by (reviewerid) into 4 buckets
+location '/user/hive/warehouse/give_your_bucketing_folder_name';
+
+SET hive.exec.max.dynamic.partitions=100000;
+SET hive.exec.max.dynamic.partitions.pernode=100000;
+
+-- Then insert the data in the table 
+insert overwrite table amazon_reviews_year_month_partitioned_clustered partition(yr, mnth)
+select reviewerid, asin, reviewername, helpful, reviewtext,
+overall, summary, unixreviewtime, year(from_unixtime(unixreviewtime)) as yr, month(from_unixtime(unixreviewtime)) as mnth
+from amazon_reviews_year_month_partitioned;
+
+
+-- Let's try and do some basic EDA on the partitioned table 
+-- We're trying to find the number of reviews for a certain year and month 
+-- First, run the query on non-partitioned data 
+
+select overall, count(*) as review_count
+from amazon_reviews_table
+where year(from_unixtime(unixreviewtime)) = 2004
+and month(from_unixtime(unixreviewtime)) = 1
+group by overall;
+
+--  overall     review_count
+--  4	        1
+
+-- Then, run the same query on the partitioned table 
+
+select overall, count(*) as review_count
+from amazon_reviews_year_month_partitioned
+where yr = 2004 and mnth = 1
+group by overall;
+
+--  overall     review_count
+--  4	        1
+
+-- Number of products for each 'popularity' (count of reviews) level 
+
+
+select popularity, count(*) as products
+from(
+    select `asin`, count(*) as popularity
+    from amazon_reviews_year_month_partitioned
+    where yr = 2012
+    group by `asin`
+)a
+group by popularity;
+
+--  popularity  products
+--	1       	4350
+--	2	        3037
+
+-- Let's observe the correlation between the number of words and overall rating 
+
+select size(split(reviewtext, ' ')) as words, avg(overall)
+from amazon_reviews_year_month_partitioned
+where yr = 2013
+group by size(split(reviewtext, ' '));
+
+
+-- ORC FILE FORMAT 
+-- This format improves query performance 
+
+-- First, create ORC table 
+create external table if not exists amazon_reviews_year_month_partition_orc
+(reviewerid string, asin string, reviewername string, helpful array<int>, reviewtext string,
+overall double, summary string, unixreviewtime bigint) partitioned by (yr int, mnth int)
+stored as orc location '/user/hive/warehouse/your_partition_folder_name_orc'
+tblproperties ("orc.compress"="SNAPPY");
+
+-- Then, write data from partition table into ORC table 
+
+insert overwrite table amazon_reviews_year_month_partition_orc partition(yr , mnth)
+select * from amazon_reviews_year_month_partitioned;
+
+-- Now you can query the ORC table 
+-- First, let's find the length of some sample reviews 
+
+select reviewtext, size(split(reviewtext, ' ')) as n_words
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+limit 10;
+
+-- Now, let's find the average length of the reviews and the variance in the length 
+
+select avg( size(split(reviewtext, ' ')) ) as avg_length, variance( size(split(reviewtext, ' ')) ) as varinc
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1;
+
+-- Then, let's find the average number of words for every rating level 
+select avg(size(split(reviewtext, ' '))) as words, overall as rating
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+group by overall;
+
+--  words	rating
+--	91.19	1
+--	93.11	2
+--	91.26	3
+--	90.86	4
+--	65.63	5
+
+-- Let's do some more analysis on the ORC tables 
+
+-- Let's find which product topped the popularity charts for the most number of months 
+-- We have considered months beyond 2005. You can change this year and test the code. 
+-- The execution time will increase as it queries more and more years 
+select asin, count(*) as charting_mnths
+from(
+    select yr, mnth, asin, popularity, rnk
+    from(
+
+        select yr, mnth, asin, popularity, rank() over (partition by yr, mnth order by popularity desc) as rnk
+        from(
+            select yr, mnth, asin, count(*) as popularity
+            from amazon_reviews_year_month_partition_orc
+            where yr >= 2005
+            group by yr, mnth, asin
+        )a
+
+    )b
+    where rnk < 10
+)c
+group by asin
+order by charting_mnths desc;
+
+
+
+-- Now, let's do some basic text analytics 
+
+-- First, view the individual tokens in lowercase 
+select reviewtext, sentences(lower(reviewtext))
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+limit 10;
+
+-- Then, view the most popular ngrams present in all these reviews 
+select explode( ngrams( sentences( lower(reviewtext) ), 2, 6)) -- top 6 2-grams have been displayed from the table
+FROM amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1;
