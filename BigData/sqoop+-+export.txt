@@ -1,0 +1,29 @@
+-- entering the mysql environment
+mysql -h sqoopdb.upg.cloudlab.com -u your_username -p your_password
+
+-- select a database 
+use database_name;
+
+-- drop table if exists
+drop table iris;
+
+-- creating a table in the database
+create table iris(sepal_length varchar(20), sepal_width varchar(20), petal_length varchar(20), petal_width varchar(20), class varchar(20));
+
+-- select the data from the created table
+select * from iris;
+
+-- exiting from mysql
+exit
+
+-- exporting data from HDFS into mysql table
+sqoop export --connect jdbc:mysql://sqoopdb.upg.cloudlab.com/database_name -username your_username --password your_password --table iris --export-dir iris_data/*
+
+-- checking if the export has happened
+mysql -h sqoopdb.upg.cloudlab.com -u your_username -p your_password
+
+-- select the database
+use database_name;
+
+-- running a select query
+select * from iris where sepal_length > 6.0;
