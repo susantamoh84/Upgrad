@@ -1,0 +1,35 @@
+
+-- IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND 
+ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+
+-- CREATE EXTERNAL TABLE 
+create external table if not exists airlines(Serial int, yr int,
+mnth int, day_month int, day_week int, DepTime int, CRSDepTime int,
+ArrTime int, CRSArrTime int, UniqueCarrier string, FlightNum int, 
+TailNum string, ActualElapsedTime int, CRSElapsedTime int, 
+AirTime int, ArrDelay int, DepDelay int, Origin int, 
+Dest int, Distance int, TaxiIn int, TaxiOut int, Canceled int, 
+CancellationCode string, Diverted int, CarrierDelay int, 
+WeatherDelay int, NASDelay int, SecurityDelay int,
+LateAircraftDelay int
+) 
+row format delimited fields terminated by ','
+location '/common_folder/airlines/'
+tblproperties ("skip.header.line.count"="1");
+
+-- RUN QUERY ON THIS TABLE
+select * from airlines limit 10;
+
+
+-- FIND DISTINCT NUMBER OF CARRIERS 
+select count(distinct UniqueCarrier) as unique_carries
+from airlines;
+
+-- FIND THE AVERAGE AIRTIME
+select avg(airtime) as avg_airtime from airlines;
+
+-- FIND THE YEAR WITH HIGHEST AVERAGE TAXI-IN TIME
+select yr, avg(taxiin) as avg_taxiin from airlines
+group by yr
+order by avg_taxiin desc;
