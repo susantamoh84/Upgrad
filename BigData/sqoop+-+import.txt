@@ -1,0 +1,28 @@
+-- Loading sql in webconsole
+mysql -h sqoopdb.upg.cloudlab.com -u your_username -p your_password
+
+-- To show the databases present
+show databases;
+
+-- To select a particular database
+use database_name;
+
+-- To show the tables present in a database
+show tables;
+
+-- To select data from the tables, you can use SQL type queries
+select * from table_name;
+
+-- To exit from sql
+exit
+
+-- To run a sqoop import job
+sqoop import --connect jdbc:mysql://database.upg.cloudlab.com/sqoopdb -username your_username --password your_password --table table_name --m 1 --target-dir /user/labuser01/sqoopdbtest
+
+-- You can refer to the following page to understand the attributes in the code. 
+-- If you have not defined primary key for your table then you have to give '-m 1' option for import.
+-- Otherwise it gives error:
+-- ERROR tool.ImportTool: Error during import: No primary key could be found for table student1. Please specify one with --split-by or perform a sequential import with '-m 1'. 
+
+-- To check if your command has worked
+hadoop fs -ls /user/labuser01/sqoopdbtest
