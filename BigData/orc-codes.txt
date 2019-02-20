@@ -1,0 +1,78 @@
+
+-- IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND 
+ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+-- ORC FILE FORMAT 
+-- This format improves query performance 
+
+-- First, create ORC table 
+create external table if not exists amazon_reviews_year_month_partition_orc
+(reviewerid string, asin string, reviewername string, helpful array<int>, reviewtext string,
+overall double, summary string, unixreviewtime bigint) partitioned by (yr int, mnth int)
+stored as orc location '/user/hive/warehouse/your_partition_folder_name_orc'
+tblproperties ("orc.compress"="SNAPPY");
+
+-- Then, write data from partition table into ORC table 
+
+insert overwrite table amazon_reviews_year_month_partition_orc partition(yr , mnth)
+select * from amazon_reviews_year_month_partitioned;
+
+-- Now you can query the ORC table 
+-- First, let's find the length of some sample reviews 
+
+select reviewtext, size(split(reviewtext, ' ')) as n_words
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+limit 10;
+
+-- Now, let's find the average length of the reviews and the variance in the length 
+
+select avg( size(split(reviewtext, ' ')) ) as avg_length, variance( size(split(reviewtext, ' ')) ) as varinc
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1;
+
+-- Then, let's find the average number of words for every rating level 
+select avg(size(split(reviewtext, ' '))) as words, overall as rating
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+group by overall;
+
+
+-- Let's do some more analysis on the ORC tables 
+
+-- Let's find which product topped the popularity charts for the most number of months 
+-- We have considered months beyond 2005. You can change this year and test the code. 
+-- The execution time will increase as it queries more and more years 
+select asin, count(*) as charting_mnths
+from(
+    select yr, mnth, asin, popularity, rnk
+    from(
+
+        select yr, mnth, asin, popularity, rank() over (partition by yr, mnth order by popularity desc) as rnk
+        from(
+            select yr, mnth, asin, count(*) as popularity
+            from amazon_reviews_year_month_partition_orc
+            where yr >= 2005
+            group by yr, mnth, asin
+        )a
+
+    )b
+    where rnk < 10
+)c
+group by asin
+order by charting_mnths desc;
+
+
+
+-- Now, let's do some basic text analytics 
+
+-- First, view the individual tokens in lowercase 
+select reviewtext, sentences(lower(reviewtext))
+from amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1
+limit 10;
+
+-- Then, view the most popular ngrams present in all these reviews 
+select explode( ngrams( sentences( lower(reviewtext) ), 2, 6))
+FROM amazon_reviews_year_month_partition_orc
+where yr = 2013 and mnth = 1;
