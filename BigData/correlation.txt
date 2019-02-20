@@ -1,0 +1,25 @@
+
+-- IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND */
+ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+-- This is the reference code, ideally you should use orc-partitioned table for faster query
+
+select corr(size(split(reviewtext, ' ')), (overall))
+from amazon_reviews_table
+where year(from_unixtime(unixreviewtime)) = 2006 
+and month(from_unixtime(unixreviewtime)) = 4
+
+select covar_pop(size(split(reviewtext, ' ')), (overall))
+from amazon_reviews_table
+where year(from_unixtime(unixreviewtime)) = 2006 
+and month(from_unixtime(unixreviewtime)) = 4
+
+select stddev_pop(size(split(reviewtext, ' ')))
+from amazon_reviews_table
+where year(from_unixtime(unixreviewtime)) = 2006 
+and month(from_unixtime(unixreviewtime)) = 4
+
+select stddev_pop(overall)
+from amazon_reviews_table
+where year(from_unixtime(unixreviewtime)) = 2006 
+and month(from_unixtime(unixreviewtime)) = 4
