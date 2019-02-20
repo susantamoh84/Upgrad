@@ -1,0 +1,160 @@
+-- IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND 
+ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+
+-- CREATE EXTERNAL TABLE 
+CREATE EXTERNAL TABLE airlines(
+`SNo` int,
+`Year` int,
+`Month` int,
+`DayofMonth` int,
+`DayOfWeek` int,
+`DepTime` int,
+`CRSDepTime` int,
+`ArrTime` int,
+`CRSArrTime` int,
+`UniqueCarrier` string,
+`FlightNum` int,
+`TailNum` string,
+`ActualElapsedTime` int,
+`CRSElapsedTime` int,
+`AirTime` int,
+`ArrDelay` int,
+`DepDelay` int,
+`Origin` string,
+`Dest` string,
+`Distance` int,
+`TaxiIn` int,
+`TaxiOut` int,
+`Cancelled` int,
+`CancellationCode` string,
+`Diverted` int,
+`CarrierDelay` int,
+`WeatherDelay` int,
+`NASDelay` int,
+`SecurityDelay` int,
+`LateAircraftDelay` int)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/common_folder/airlines/'
+tblproperties ("skip.header.line.count"="1");
+
+SELECT * FROM airlines;
+
+-- PARTITION THE DATA  
+-- IMPORTANT: BEFORE PARTITIONING ANY TABLE, MAKE SURE YOU RUN THESE COMMANDS 
+SET hive.exec.max.dynamic.partitions=100000;
+SET hive.exec.max.dynamic.partitions.pernode=100000;
+
+-- First drop the table 
+drop table airlines_partitioned;
+
+-- Then create external table 
+create external table if not exists airlines_partitioned
+(
+`SNo` int,
+`Month` int,
+`DayofMonth` int,
+`DayOfWeek` int,
+`DepTime` int,
+`CRSDepTime` int,
+`ArrTime` int,
+`CRSArrTime` int,
+`UniqueCarrier` string,
+`FlightNum` int,
+`TailNum` string,
+`ActualElapsedTime` int,
+`CRSElapsedTime` int,
+`AirTime` int,
+`ArrDelay` int,
+`DepDelay` int,
+`Origin` string,
+`Dest` string,
+`Distance` int,
+`TaxiIn` int,
+`TaxiOut` int,
+`Cancelled` int,
+`CancellationCode` string,
+`Diverted` int,
+`CarrierDelay` int,
+`WeatherDelay` int,
+`NASDelay` int,
+`SecurityDelay` int,
+`LateAircraftDelay` int)
+partitioned by (`Year` int)
+location '/user/hive/warehouse/give_your_partition_folder_name';
+
+select * from airlines_partitioned;
+
+-- Then insert the data in the table 
+insert overwrite table airlines_partitioned partition(`Year`)
+select `SNo`,
+`Month`,
+`DayofMonth`,
+`DayOfWeek`,
+`DepTime`,
+`CRSDepTime`,
+`ArrTime`,
+`CRSArrTime`,
+`UniqueCarrier`,
+`FlightNum`,
+`TailNum`,
+`ActualElapsedTime`,
+`CRSElapsedTime`,
+`AirTime`,
+`ArrDelay`,
+`DepDelay`,
+`Origin`,
+`Dest`,
+`Distance`,
+`TaxiIn`,
+`TaxiOut`,
+`Cancelled`,
+`CancellationCode`,
+`Diverted`,
+`CarrierDelay`,
+`WeatherDelay`,
+`NASDelay`,
+`SecurityDelay`,
+`LateAircraftDelay`,
+`Year`
+from airlines;
+
+select * from airlines_partitioned;
+
+-- non-partitioned table, takes more time
+SELECT count(*) from airlines where year = 2004;
+
+-- Partitioned table
+SELECT count(*) from airlines_partitioned where year = 2004;
+
+-- Comparison using a partitioned table
+
+SELECT Year, avg(AirTime) as avg_AirTime
+from airlines_partitioned
+GROUP BY Year;
+
+
+--1. Compare the average arrival delay for each year.
+
+SELECT Year, avg(ArrDelay) as avg_ArrDelayTime
+from airlines_partitioned
+GROUP BY Year;
+
+--2. Compare the average departure delay for each year.
+
+SELECT Year, avg(DepDelay) as avg_DepDelayTime
+from airlines_partitioned
+GROUP BY Year;
+
+--3. Compare the average taxi-in time for each year.
+
+SELECT Year, avg(TaxiIn) as avg_TaxiInTime
+from airlines_partitioned
+GROUP BY Year;
+
+--4. Compare the average taxi-out time for each year.
+
+SELECT Year, avg(TaxiOut) as avg_TaxiOutTime
+from airlines_partitioned
+GROUP BY Year;
