@@ -106,7 +106,6 @@
     - Each tree is trained on a random bootstrapped sample of the original dataset
     - Each tree selected a random set of features for decising the split at a node
       - Typically M^0.5 number of features are considered
-    - Each tree also selectes a random subset of feature from the original dataset ( this doesn't happen in bagging )
     - For regression mean of the results of all trees are taken
     - For classification majority voting is done for all trees
     
