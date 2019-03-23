@@ -89,3 +89,9 @@
       - It is difficult to interpret as a percentage.
       - The MAPE is known to favour models that consistently predict lower values. This may introduce bias.
       
+# TimeSeries Smoothing
+
+  - differencing: Classical Decomposition & ARMA
+  - Moving Average smoothing
+  - Exponential Smooting
+  
