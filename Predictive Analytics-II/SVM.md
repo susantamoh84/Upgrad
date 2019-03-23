@@ -38,3 +38,16 @@
   - misclassification can be controlled by the value of cost or C. 
   - If C is large, the slack variables (epsilons( ϵ)) can be large, i.e. you allow a larger number of data points to be misclassified or violate the margin; 
   - and if C is small, you force the individual slack variables to be small, i.e. you do not allow many data points to fall on the wrong side of the margin or the hyperplane
+
+# Kernels
+
+  - Kernels — they enable the linear SVM model to separate nonlinearly separable data points
+  - To summarise, you can transform nonlinear boundaries to linear boundaries by applying certain functions to the original attributes. The original space (X, Y) is called the original attribute space, and the transformed space (X’, Y’) is called the feature space
+  - The three most popular types of kernel functions are:
+    - The linear kernel: This is the same as the support vector classifier, or the hyperplane, without any transformation at all
+    - The polynomial kernel: It is capable of creating nonlinear, polynomial decision boundaries
+    - The radial basis function (RBF) kernel: This is the most complex one, which is capable of transforming highly nonlinear feature spaces to linear ones. It is even capable of creating elliptical (i.e. enclosed) decision boundaries
+      - Need to tune sigma & C:
+        - When sigma is high, more nonlinearity is added.
+        
+    
