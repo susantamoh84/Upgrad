@@ -22,6 +22,28 @@
   
 # Gini Index
 
-
+  - Gini Index(gender) = (fraction of total observations in male-node)*Gini index of male-node + (fraction of total observations in female-node)*Gini index of female-node.
+    - Gini index of male-node = (Positive-label-male/Total-male)^2 + (Negative-label-male/Total-male)^2
+    - Gini index of feamale-node = (Positive-label-female/Total-female)^2 + (Negative-label-female/Total-female)^2
+    
+  - Gini Index for attribute split is considered better if it provides higher Gini-Index compared to other attributes
   
+# Entropy & Information Gain
+
+  - Entropy of a dataset varies from values 0 to 1
+  - If a dataset is completely homogenous then Entrpy = 0 ( no-disorder )
+  - Entropy ε[D] = −∑(i=1 to k)Pilog2Pi
+    - Probability of finding a point with the label i
+  
+  - Information Gain = How much entropy has decreased between the parent set and the paritions obtained after splitting
+  - Let's consider an example. 
+    - You have four data points out of which two belong to the class label '1', and the other two belong to the class label '2'. 
+    - You split the points such that 
+      - the left partition has two data points belonging to label '1', 
+      - the right partition has the other two data points that belong to label '2'. 
+    - Now let's assume that you split on some attribute called 'A'.
+    - Entropy of original/parent data set is ε[D] = −[(2/4)log2(2/4) + (2/4)log2(2/4)] = 1.0.
+    - Entropy of the partitions after splitting is ε[DA] = −[(0.5)log2(2/2) + (0.5)log2(2/2)] = 0
+    - Information gain after splitting is Gain[D,A] = ε[D] - ε[DA] = 1.0
+    
     
