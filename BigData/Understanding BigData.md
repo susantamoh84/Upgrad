@@ -51,3 +51,29 @@
   - Low-cost implementation: Hadoop runs on commodity machines, which are low-cost computers that lead to a lower implementation cost. 
   - Flexibility: Hadoop can process any kind of data (structured, semi-structured, and unstructured).
   
+# Yet Another Resource Negotiator
+
+  - 3 layers of Hadoop:
+  
+    - The Storage Layer: HDFS
+    - The resource management layer: YARN
+    - The Data-processing layer: Map-Reduce
+    
+  - Coming to the structure of YARN, there are 4 components in it:
+
+    - Resource manager: It looks after the resources of the entire cluster. 
+      The slave machines run multiple tasks which require different resources for execution, such as memory (RAM), CPU, etc. 
+      These resources are allocated by the resource manager.
+
+    - Node manager: The node manager keeps track of the resources running on the slave machine (one data node) it is residing on. 
+      It manages the resources allocated for each of the applications (also known as tasks) inside the node and 
+      communicates the status of the resources to the resource manager.
+
+    - Application Master: A job is subdivided into multiple tasks. Each task is individually managed by the application master. 
+      It looks after the lifecycle of the task and sends timely requests to the resource manager for the required containers.
+
+    - Containers: To perform each task, the application master will require different components like memory (RAM) or CPU or 
+      storage disks. These components are collectively termed as containers and are managed by the node manager. 
+      These containers are the actual place where the task is performed.
+      
+      
