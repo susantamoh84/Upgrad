@@ -77,3 +77,12 @@
       These containers are the actual place where the task is performed.
       
       
+# Hadoop EcoSystem
+
+  - Sqoop and Flume: These tools are designed to efficiently transfer bulk data between Hadoop, RDBMSs, and 
+    real-time streaming data sources. 
+      - Sqoop is used to transfer data from an RDBMS to the HDFS. 
+      - Likewise, if you are storing data in real time and want to store it in the HDFS, you would need Flume. 
+        - So, Flume is used when you have a continuous flow of data and want to store it in the HDFS.
+  - Hive: It helps you access and analyse data in Hadoop with a query language such as SQL. 
+      - HIVE-QL is the query language introduced for this purpose, which is similar to SQL
