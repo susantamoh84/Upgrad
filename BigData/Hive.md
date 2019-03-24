@@ -73,3 +73,27 @@
   - Other popular file formats are Parquets, Avro, RC etc.
   
   
+# Advanced Data Analysis
+
+  - Hive CheetSheets: https://martin.atlassian.net/wiki/spaces/lestermartin/pages/19431488/Hive+Cheat+Sheet
+  - Hive UDFs:
+    - correlation between 2 columns
+  - Basic Text Analysis:
+    - A Brief Introduction to N-grams:
+      - The concept of n-grams is a very basic form of language modelling. An n-gram is basically a continuous series of n words in a given sample of text or speech.
+      - An n-gram model is an essential tool in language processing, which can be used for sentiment analysis, character relationship analysis, etc. Also, n-grams can be used to conduct  'sentiment analysis' of a review in the Amazon dataset.
+      
+    - Code:
+    --IMPORTANT: BEFORE CREATING ANY TABLE, MAKE SURE YOU RUN THIS COMMAND 
+      ADD JAR /opt/cloudera/parcels/CDH/lib/hive/lib/hive-hcatalog-core-1.1.0-cdh5.11.2.jar;
+
+      SELECT explode( ngrams( sentences( lower(reviewtext) ), 2, 6))
+      FROM amazon_reviews_year_month_partition_orc
+      where yr = 2013 and mnth = 1;
+      
+# Complex Data-types using Hive
+
+  - Primitive data types are simple data types and they are the basic building blocks of any programming language. 
+    For example, integer, string, etc.
+  - Complex data types are used to store complex numbers and complex arithmetic structures such as struct, matrix, and arrays.
+  
