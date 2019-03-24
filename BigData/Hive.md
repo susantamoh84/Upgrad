@@ -61,3 +61,15 @@
     - It is important to note that bucketing uses the hash of a column to create multiple 'buckets', whereas partitions 
       are more straightforward - they are simply segmented directories according to the value of a column (year, month etc.)
       
+
+# FileFormats for Apache Hive
+
+  - ORC (Optimized Row Columnar) is an extremely commonly used file format used for faster query performance.
+  - Each stripe belonging to an ORC file comprises of "Index Data", "Row Data", and a "Stripe Footer"
+    - Index Data: It includes min and max values for each column and the row positions within each column, "Row Data", and a "Stripe Footer
+    - Stripe Footer: It includes encoding of each column and the directory of the streams including their location
+    - Row data: It is the actual content of the data
+    
+  - Other popular file formats are Parquets, Avro, RC etc.
+  
+  
